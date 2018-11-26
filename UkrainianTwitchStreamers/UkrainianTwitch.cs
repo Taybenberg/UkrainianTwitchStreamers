@@ -10,6 +10,7 @@ public class UkrainianTwitch
 
     public string[] users { get; set; } = { "playua", "violinua", "alex_d20", "yvan_snig", "pad0n", "sbt_localization", "tenevyk", "gamer_fm", "telpecarne", "dpalladinno", "bigdriftermen", "logos_ua", "gamecraft", "gameon_ua", "dobra_divka", "gamewithua", "taitake", "brokengamestudio", "bravetaras", "meatball_ua", "jopreston", "vatmanua", "hell_ua", "angryukrainiangamer", "ditho_play", "vitaliyfors", "ihor4uk_ua", "tequila860", "offmisterzoltan", "tigerualviv", "shaddixua", "uesfdota1" };
 
+    private string token;
     private Stream[] streams;
 
     public class Stream
@@ -34,35 +35,53 @@ public class UkrainianTwitch
 
     public UkrainianTwitch(string token)
     {
+        this.token = token;
         streams = new Stream[users.Length];
 
+        for (int i = 0; i < users.Length; i++)
+            fetchData(i);
+
+        bool flag = true;
+        while (flag)
+        {
+            flag = false;
+            for (int i = 0; i < users.Length; i++)
+                if (streams[i] == null)
+                    flag = true;
+        }
+    }
+
+    private void fetchData(int userPos)
+    {
         using (var webClient = new WebClient())
         {
             webClient.Headers.Add("user-agent", UserAgent);
             webClient.QueryString.Add("client_id", token);
             webClient.UseDefaultCredentials = true;
 
-            for (int i = 0; i < users.Length; i++)
+            webClient.DownloadStringCompleted += (sender, e) =>
             {
-                JObject jObject = JObject.Parse(webClient.DownloadString($"{ApiUrl}{users[i]}"));
+                JObject jObject = JObject.Parse(e.Result);
 
                 if (jObject["stream"].Type != JTokenType.Null)
                 {
-                    streams[i] = new Stream();
-                    streams[i].online = true;
-                    streams[i].url = $"{TwitchUrl}{users[i]}";
-                    streams[i].name = users[i];
-                    streams[i].game = jObject["stream"]["game"].ToString();
-                    streams[i].title = jObject["stream"]["title"].ToString();
+                    streams[userPos] = new Stream();
+                    streams[userPos].online = true;
+                    streams[userPos].url = $"{TwitchUrl}{users[userPos]}";
+                    streams[userPos].name = jObject["stream"]["channel"]["name"].ToString();
+                    streams[userPos].game = jObject["stream"]["game"].ToString();
+                    streams[userPos].title = jObject["stream"]["channel"]["status"].ToString();
                 }
                 else
                 {
-                    streams[i] = new Stream();
-                    streams[i].online = false;
-                    streams[i].url = $"{TwitchUrl}{users[i]}";
-                    streams[i].name = users[i];
+                    streams[userPos] = new Stream();
+                    streams[userPos].online = false;
+                    streams[userPos].url = $"{TwitchUrl}{users[userPos]}";
+                    streams[userPos].name = users[userPos];
                 }
-            }
+            };
+
+            webClient.DownloadStringAsync(new System.Uri($"{ApiUrl}{users[userPos]}"));
         }
     }
 
