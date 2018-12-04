@@ -93,12 +93,12 @@ public class UkrainianTwitch
         return res;
     }
 
-    Channel[] ToArray()
+    public Channel[] ToArray()
     {
         return streams.ToArray();
     }
 
-    List<Channel> ToList()
+    public List<Channel> ToList()
     {
         return streams;
     }
