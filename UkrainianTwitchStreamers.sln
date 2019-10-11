@@ -1,9 +1,13 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28010.2050
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29324.140
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UkrainianTwitchStreamers", "UkrainianTwitchStreamers\UkrainianTwitchStreamers.csproj", "{325F5A23-3CED-473A-B7E3-A02C4782DE13}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UkrainianTwitchStreamers", "UkrainianTwitchStreamers\UkrainianTwitchStreamers.csproj", "{325F5A23-3CED-473A-B7E3-A02C4782DE13}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchUkrBot", "TwitchUkrBot\TwitchUkrBot.csproj", "{95B9B406-0145-4853-985D-4E76DCE91383}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TwitchUkrBotRunner", "TwitchUkrBotRunner\TwitchUkrBotRunner.csproj", "{E712A21D-4548-4F03-B641-B97F714DC0A9}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{325F5A23-3CED-473A-B7E3-A02C4782DE13}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{325F5A23-3CED-473A-B7E3-A02C4782DE13}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{325F5A23-3CED-473A-B7E3-A02C4782DE13}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95B9B406-0145-4853-985D-4E76DCE91383}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95B9B406-0145-4853-985D-4E76DCE91383}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95B9B406-0145-4853-985D-4E76DCE91383}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95B9B406-0145-4853-985D-4E76DCE91383}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E712A21D-4548-4F03-B641-B97F714DC0A9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E712A21D-4548-4F03-B641-B97F714DC0A9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E712A21D-4548-4F03-B641-B97F714DC0A9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E712A21D-4548-4F03-B641-B97F714DC0A9}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
