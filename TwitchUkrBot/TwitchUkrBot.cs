@@ -38,7 +38,7 @@ namespace TwitchUkrBot
                             break;
 
                         case "streamers":
-                            foreach (var stream in new UkrainianTwitch(TwitchApiToken).ToStringArray())
+                            foreach (var stream in new UkrainianTwitchStreamers.UkrainianTwitch(TwitchApiToken).ToStringArray())
                                 Bot.SendTextMessageAsync(ChatId, stream);
                             break;
                     }
