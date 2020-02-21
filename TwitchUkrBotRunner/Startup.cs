@@ -27,7 +27,7 @@ namespace TwitchUkrBotRunner
         // For more information on how to configure your application, visit https://go.microsoft.com/fwlink/?LinkID=398940
         public void ConfigureServices(IServiceCollection services)
         {
-            new TwitchUkrBot.TwitchUkrBot(Configuration.GetValue<string>("TelegramBotApiToken"), Configuration.GetValue<string>("TwitchApiToken"));
+            new TwitchUkrBot.TwitchUkrBot(Environment.GetEnvironmentVariable("TelegramBotApiToken"), Environment.GetEnvironmentVariable("TwitchApiToken"));
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
