@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  twitchukrbotrunner:
+    image: ${DOCKER_REGISTRY-}twitchukrbotrunner
+    build:
+      context: .
+      dockerfile: TwitchUkrBotRunner/Dockerfile
