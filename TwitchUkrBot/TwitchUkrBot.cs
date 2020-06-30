@@ -8,19 +8,19 @@ namespace TwitchUkrBot
 {
     public class TwitchUkrBot
     {
-        readonly string TelegramApiToken;
-        readonly string TwitchApiToken;
+        private TelegramBotClient bot;
+
+        public void Start() => bot.StartReceiving();
+
+        public void Stop() => bot.StopReceiving();
 
         public TwitchUkrBot(string TelegramApiToken, string TwitchApiToken)
         {
-            this.TelegramApiToken = TelegramApiToken;
-            this.TwitchApiToken = TwitchApiToken;
+            bot = new TelegramBotClient(TelegramApiToken);
 
-            var Bot = new TelegramBotClient(TelegramApiToken);
+            bot.SetWebhookAsync("");
 
-            Bot.SetWebhookAsync("");
-
-            Bot.OnInlineQuery += async (object updobj, InlineQueryEventArgs iqea) =>
+            bot.OnInlineQuery += async (object updobj, InlineQueryEventArgs iqea) =>
             {
                 var list = new UkrainianTwitchStreamers.UkrainianTwitch(TwitchApiToken).ToList();
                 
@@ -41,10 +41,10 @@ namespace TwitchUkrBot
                     inline[i].ThumbUrl = list[i].url;
                 }
 
-                await Bot.AnswerInlineQueryAsync(iqea.InlineQuery.Id, inline);
+                await bot.AnswerInlineQueryAsync(iqea.InlineQuery.Id, inline);
             };
 
-            Bot.OnMessage += async (object updobj, MessageEventArgs mea) =>
+            bot.OnMessage += async (object updobj, MessageEventArgs mea) =>
             {
                 if (mea.Message.Type == MessageType.Text)
                 {
@@ -60,23 +60,21 @@ namespace TwitchUkrBot
                     switch (command)
                     {
                         case "start":
-                            await Bot.SendTextMessageAsync(ChatId, "Вітаю! Я @TwitchUkrBot!\nНатисніть '/', щоби обрати команду.");
+                            await bot.SendTextMessageAsync(ChatId, "Вітаю! Я @TwitchUkrBot!\nНатисніть '/', щоби обрати команду.");
                             break;
 
                         case "streamers":
                             foreach (var stream in new UkrainianTwitchStreamers.UkrainianTwitch(TwitchApiToken).ToList())
-                                Bot.SendTextMessageAsync(ChatId, $"<b>{stream.title}</b>\n<i>{stream.user_name}</i> <b>|</b> <i>{stream.name}</i>\n{stream.url}", ParseMode.Html);
+                                bot.SendTextMessageAsync(ChatId, $"<b>{stream.title}</b>\n<i>{stream.user_name}</i> <b>|</b> <i>{stream.name}</i>\n{stream.url}", ParseMode.Html);
                             break;
 
                         case "sendstreamer":
-                            await Bot.SendTextMessageAsync(ChatId, "Натисніть кнопку та оберіть чат до якого хочете надіслати стрімера.", replyMarkup: new InlineKeyboardMarkup(new[] { InlineKeyboardButton.WithSwitchInlineQuery("Надіслати") }));
+                            await bot.SendTextMessageAsync(ChatId, "Натисніть кнопку та оберіть чат до якого хочете надіслати стрімера.", replyMarkup: new InlineKeyboardMarkup(new[] { InlineKeyboardButton.WithSwitchInlineQuery("Надіслати") }));
                             break;
 
                     }
                 }
             };
-
-            Bot.StartReceiving();
         }
     }
 }
