@@ -18,11 +18,6 @@ namespace TwitchUkrBotWorker
            Host.CreateDefaultBuilder(args)
                .ConfigureServices((hostContext, services) =>
                {
-                   services.AddSingleton(new BotTokens
-                   {
-                       TelegramApiToken = Environment.GetEnvironmentVariable("TelegramBotApiToken"), 
-                       TwitchApiToken = Environment.GetEnvironmentVariable("TwitchApiToken")
-                   });
                    services.AddHostedService<Worker>();
                });
     }
