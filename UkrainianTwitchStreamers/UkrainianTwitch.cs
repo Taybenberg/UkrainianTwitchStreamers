@@ -36,8 +36,6 @@ namespace UkrainianTwitchStreamers
 
         public UkrainianTwitch(string clientId, string secret)
         {
-            System.Console.WriteLine("ok");
-
             TwitchAPI api = new TwitchAPI();
 
             api.Settings.ClientId = clientId;
