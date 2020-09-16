@@ -7,6 +7,7 @@ namespace TwitchUkrBotWorker
     public class BotTokens
     {
         public string TelegramApiToken { get; set; }
-        public string TwitchApiToken { get; set; }
+        public string TwitchClientId { get; set; }
+        public string TwitchSecret { get; set; }
     }
 }

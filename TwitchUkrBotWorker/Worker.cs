@@ -27,10 +27,11 @@ namespace TwitchUkrBotWorker
             var botTokens = new BotTokens()
             {
                 TelegramApiToken = Regex.Match(text, "\"TelegramBotApiToken\" value=\"(.+)\"").Groups[1].Value,
-                TwitchApiToken = Regex.Match(text, "\"TwitchApiToken\" value=\"(.+)\"").Groups[1].Value
+                TwitchClientId = Regex.Match(text, "\"TwitchClientId\" value=\"(.+)\"").Groups[1].Value,
+                TwitchSecret = Regex.Match(text, "\"TwitchSecret\" value=\"(.+)\"").Groups[1].Value
             };
 
-            bot = new TwitchUkrBot.TwitchUkrBot(botTokens.TelegramApiToken, botTokens.TwitchApiToken);
+            bot = new TwitchUkrBot.TwitchUkrBot(botTokens.TelegramApiToken, botTokens.TwitchClientId, botTokens.TwitchSecret);
         }
 
         public Task StartAsync(CancellationToken cancellationToken)

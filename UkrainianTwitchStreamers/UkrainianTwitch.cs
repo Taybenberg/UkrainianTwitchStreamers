@@ -1,16 +1,13 @@
-using System.Net;
 using System.Text;
+using System.Linq;
 using System.Collections.Generic;
-using Newtonsoft.Json.Linq;
+using TwitchLib.Api;
 
 namespace UkrainianTwitchStreamers
 {
     public class UkrainianTwitch
     {
-        private const string TwitchStreamsApi = "https://api.twitch.tv/helix/streams";
         private const string TwitchUrl = "https://www.twitch.tv/";
-        private const string TwitchGameApi = "https://api.twitch.tv/helix/games";
-        private const string UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.102 Safari/537.36 Edge/18.17763";
 
         private List<Channel> streams = new List<Channel>();
 
@@ -18,7 +15,6 @@ namespace UkrainianTwitchStreamers
         {
             public string user_name { get; set; }
             public string title { get; set; }
-            public int game_id { get; set; }
             public string name { get; set; } = "-";
             public string url
             {
@@ -38,62 +34,38 @@ namespace UkrainianTwitchStreamers
             }
         }
 
-        private class Game
+        public UkrainianTwitch(string clientId, string secret)
         {
-            public int id { get; set; }
-            public string name { get; set; }
-        }
+            System.Console.WriteLine("ok");
 
-        public UkrainianTwitch(string token)
-        {
-            using (var webClient = new WebClient())
-            {
-                webClient.Encoding = Encoding.UTF8;
+            TwitchAPI api = new TwitchAPI();
 
-                webClient.Headers.Add("user-agent", UserAgent);
-                webClient.Headers.Add("Client-ID", token);
-                webClient.QueryString.Add("language", "uk");
+            api.Settings.ClientId = clientId;
+            api.Settings.Secret = secret;
 
-                JObject jObject = JObject.Parse(webClient.DownloadString(TwitchStreamsApi));
+            var r = api.Helix.Streams.GetStreamsAsync(first: 100, languages: new List<string> { "uk" }).Result;
 
-                var results = jObject["data"].Children();
+            var gids = r.Streams.Where(x => !string.IsNullOrEmpty(x.GameId)).Select(x => x.GameId).ToList();
 
-                string url = TwitchGameApi;
-                int count = 0;
+            var games = api.Helix.Games.GetGamesAsync(gids).Result.Games;
 
-                foreach (JToken result in results)
+            var liveChannels = r.Streams.SelectMany(
+                stream => games.Where(game => game.Id == stream.GameId).DefaultIfEmpty(),
+                (stream, game) => new
                 {
-                    var stream = result.ToObject<Channel>();
-                    streams.Add(stream);
+                    UserName = stream.UserName,
+                    Title = stream.Title,
+                    Name = game == null ? "-" : game.Name
+                });
 
-                    if (count == 0)
-                        url += "?id=" + stream.game_id.ToString();
-                    else
-                        url += "&id=" + stream.game_id.ToString();
-
-                    count++;
-                }
-
-                webClient.QueryString.Clear();
-
-                if (streams.Count > 0)
+            foreach (var live in liveChannels)
+                streams.Add(new Channel
                 {
-                    jObject = JObject.Parse(webClient.DownloadString(url));
-
-                    results = jObject["data"].Children();
-
-                    foreach (JToken result in results)
-                    {
-                        var game = result.ToObject<Game>();
-
-                        for (int i = 0; i < streams.Count; i++)
-                            if (streams[i].game_id == game.id)
-                                streams[i].name = game.name;
-                    }
-                }
-            }
+                    user_name = live.UserName,
+                    title = live.Title,
+                    name = live.Name
+                });
         }
-
         public string ToString(string separator = null)
         {
             StringBuilder res = new StringBuilder();

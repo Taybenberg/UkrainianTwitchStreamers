@@ -14,7 +14,7 @@ namespace TwitchUkrBot
 
         public void Stop() => bot.StopReceiving();
 
-        public TwitchUkrBot(string TelegramApiToken, string TwitchApiToken)
+        public TwitchUkrBot(string TelegramApiToken, string TwitchClientId, string TwitchSecret)
         {
             bot = new TelegramBotClient(TelegramApiToken);
 
@@ -22,7 +22,7 @@ namespace TwitchUkrBot
 
             bot.OnInlineQuery += async (object updobj, InlineQueryEventArgs iqea) =>
             {
-                var list = new UkrainianTwitchStreamers.UkrainianTwitch(TwitchApiToken).ToList();
+                var list = new UkrainianTwitchStreamers.UkrainianTwitch(TwitchClientId, TwitchSecret).ToList();
                 
                 var inline = new InlineQueryResultArticle[list.Count];
 
@@ -64,7 +64,7 @@ namespace TwitchUkrBot
                             break;
 
                         case "streamers":
-                            foreach (var stream in new UkrainianTwitchStreamers.UkrainianTwitch(TwitchApiToken).ToList())
+                            foreach (var stream in new UkrainianTwitchStreamers.UkrainianTwitch(TwitchClientId, TwitchSecret).ToList())
                                 bot.SendTextMessageAsync(ChatId, $"<b>{stream.title}</b>\n<i>{stream.user_name}</i> <b>|</b> <i>{stream.name}</i>\n{stream.url}", ParseMode.Html);
                             break;
 
